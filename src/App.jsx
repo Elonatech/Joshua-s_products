@@ -1,35 +1,144 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, {useState} from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import CartButton from "./component/CartButton";
+import ProductDetail from "./component/ProductDetails";
+import BillingPage from "./component/BillingPage";
+import emailjs from "emailjs-com";
+import { products } from "./data";
+import ProductCard from "./component/ProductCards";
+import CartPage from "./component/CartPage";
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const App = () => {
+  const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
+
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const checkout = (reference) => {
+    const formatOrderDetails = (cart) => {
+      return cart
+        .map((item) => `${item.name} - Quantity: ${item.quantity}`)
+        .join("\n");
+    };
+
+    const templateParams = {
+      to_name: "Elonatech",
+      order_details: formatOrderDetails(cart),
+      to_email: "theamazingkeyz@gmail.com",
+      from_name: "Elonatech stores",
+      payment_reference: reference ? reference.reference : "N/A"
+    };
+
+    emailjs
+      .send(
+        "service_4j9v8gu",
+        "template_u8guywf",
+        templateParams,
+        "6m8OAUHLMtRXyi9eA"
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+        },
+        (error) => {
+          console.log("FAILED...", error);
+          alert("Failed to place order");
+        }
+      );
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="">
+      <header>
+        <CartButton
+          cartCount={cart.reduce((total, item) => total + item.quantity, 0)}
+          onClick={() => navigate("/cart")}
+        />
+      </header>
+      <Routes>   
+        <Route
+          path="/"
+          element={
+            <div className="p-[20px] max-w-[900px] mx-[auto] my-[0]">
+              <div className="grid grid-cols-[repeat(4,_1fr)] gap-10">
+                {products.map((product) => (
+                  <ProductCard
+                    className="border-[1px] border-[solid] border-[#ccc] p-[20px] rounded-[5px] text-left"
+                    key={product.id}
+                    product={product}
+                    addToCart={addToCart}
+                    updateCartItemQuantity={updateQuantity}
+                    removeFromCart={removeFromCart}
+                  />
+                ))}
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <CartPage
+              cartItems={cart}
+              removeFromCart={removeFromCart}
+              updateQuantity={updateQuantity}
+              checkout={checkout}
+            />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetail
+              products={products}
+              addToCart={addToCart}
+              updateCartItemQuantity={updateQuantity}
+              removeFromCart={removeFromCart}
+              cart={cart}
+            />
+          }
+        />
+        <Route
+          path="/billing"
+          element={
+            <BillingPage
+              cartItems={cart}
+              totalPrice={cart.reduce(
+                (total, item) => total + item.price * item.quantity,
+                0
+              )}
+              checkout={checkout}
+            />
+          }
+        />
+      </Routes>
+    </div>
+  );
+};
 
-export default App
+export default App;
