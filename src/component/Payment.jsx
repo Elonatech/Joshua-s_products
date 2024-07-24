@@ -7,7 +7,6 @@ const Payment = () => {
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const address1 = "you are welcome";
 
   const componentProps = {
     email,
@@ -18,7 +17,8 @@ const Payment = () => {
     },
     publicKey,
     text: "Pay Now",
-    onSuccess: () => alert("payment successfull 🎉!!"),
+    onSuccess: () =>
+      alert("payment successfull 🎉!!"),
     onClose: () => alert("are you sure you want to cancel order??!!!!")
   };
 

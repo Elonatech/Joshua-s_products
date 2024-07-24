@@ -1,17 +1,14 @@
-import React from "react";
+import React from 'react';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { TbCurrencyNaira } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = ({ cartItems, removeFromCart, updateQuantity, checkout }) => {
   const navigate = useNavigate();
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    navigate("/billing", { state: { cartItems, totalPrice } });
+    navigate('/billing', { state: { cartItems, totalPrice } });
   };
 
   return (
@@ -26,21 +23,21 @@ const CartPage = ({ cartItems, removeFromCart, updateQuantity, checkout }) => {
               key={item.id}
               className="flex px-[0] py-[20px] border-b-[1px_solid_#e0e0e0]"
             >
-              <img src={item.image} alt={item.name} />
+              <img src={item.image} alt={item.name} className='w-20 h-20' />
               <div className="flex-grow">
                 <h3>{item.name}</h3>
                 <p className="price">
-                  <TbCurrencyNaira />
+                  <TbCurrencyNaira/>
                   {item.price.toLocaleString()}
                 </p>
-                <div className="bg-orange-500 flex text-white items-center justify-between ">
+                <div className="flex text-orange-500 items-center justify-between space-x-4 ">
                   <button
-                    className=" flex justify-between items-center space-x-2"
+                    className=" flex justify-between items-center space-x-2 border border-bg-orange-500"
                     onClick={() => removeFromCart(item.id)}
                   >
                     <FaTrash /> REMOVE
                   </button>
-                  <div className="flex items-center justify-between space-x-2">
+                  <div className="flex items-center justify-between space-x-2 p-2">
                     <button
                       onClick={() =>
                         updateQuantity(item.id, Math.max(1, item.quantity - 1))
@@ -69,10 +66,7 @@ const CartPage = ({ cartItems, removeFromCart, updateQuantity, checkout }) => {
               {totalPrice.toLocaleString()}
             </span>
           </div>
-          <button
-            className="flex items-center justify-between bg-orange-500 text-white p-4"
-            onClick={handleCheckout}
-          >
+          <button className="flex items-center justify-between bg-orange-500 text-white p-4" onClick={handleCheckout}>
             CHECKOUT (<TbCurrencyNaira />
             {totalPrice.toLocaleString()})
           </button>

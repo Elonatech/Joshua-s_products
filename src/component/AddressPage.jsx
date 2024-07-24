@@ -40,7 +40,7 @@ function Address() {
         {update ? (
           <input
             type="text"
-            className="font-normal tracking-wide text-xl"
+            className="text-xl"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
           />

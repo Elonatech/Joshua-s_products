@@ -7,6 +7,7 @@ import emailjs from "emailjs-com";
 import { products } from "./data";
 import ProductCard from "./component/ProductCards";
 import CartPage from "./component/CartPage";
+import Payment from "./component/Payment";
 
 
 const App = () => {
@@ -80,7 +81,7 @@ const App = () => {
           onClick={() => navigate("/cart")}
         />
       </header>
-      <Routes>   
+      <Routes>
         <Route
           path="/"
           element={
@@ -133,6 +134,15 @@ const App = () => {
                 0
               )}
               checkout={checkout}
+            />
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <Payment
+            
+              
             />
           }
         />

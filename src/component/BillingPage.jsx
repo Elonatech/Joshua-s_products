@@ -6,6 +6,7 @@ import OrderSummary from "./Order";
 import DeliveryDetails from "./DeliveryDetails";
 import Payment from "./Payment";
 import PopupMessage from "./PopupMessage";
+import PaymentMethod from "./PaymentMethod";
 
 
 function BillingPage({ cartItems, totalPrice, checkout }) {
@@ -41,11 +42,16 @@ function BillingPage({ cartItems, totalPrice, checkout }) {
           <div className="left-column">
             <Address />
             <DeliveryDetails />
-            <Payment
+            <PaymentMethod
               onPaymentConfirmed={handlePaymentConfirmed}
               totalAmount={totalPrice}
               email={userEmail}
             />
+            {/* <Payment
+              onPaymentConfirmed={handlePaymentConfirmed}
+              totalAmount={totalPrice}
+              email={userEmail}
+            /> */}
           </div>
           <div className="right-column">
             <OrderSummary

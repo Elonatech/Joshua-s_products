@@ -85,7 +85,7 @@ const ProductCard = ({
           {product.name}
         </h3>
       </Link>
-      <p className="text-lg font-bold text-orange-400 mb-3">
+      <p className="text-lg font-bold text-orange-400 mb-3 flex items-center">
         <FaNairaSign />
         {product.price.toLocaleString()}
       </p>
